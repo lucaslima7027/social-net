@@ -4,14 +4,18 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from .models import Post
+from django.core.paginator import Paginator
 
 from .models import User
 
 
 def index(request):
     all_posts = Post.objects.all()
+    paginator = Paginator(all_posts, 1)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
     return render(request, "network/index.html", {
-        "all_posts": all_posts 
+        "page_obj": page_obj 
     })
 
 
@@ -65,3 +69,6 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "network/register.html")
+
+def returnHtml(request, file_name):
+    return render(request, f'network/{file_name}.html')

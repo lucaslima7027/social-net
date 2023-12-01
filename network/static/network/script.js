@@ -3,3 +3,8 @@ document.querySelectorAll(".date").forEach(element => {
     const date = new Date(utcDate);
     element.innerHTML = date.toLocaleString('default');
 });
+
+
+document.querySelector("#test").onclick = () => {
+
+}
