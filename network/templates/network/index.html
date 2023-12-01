@@ -1,5 +1,9 @@
 {% extends "network/layout.html" %}
 
 {% block body %}
-    TODO
+    {% for post in all_posts %}
+    <h1>{{ post.creator }}</h1>
+    <p>{{ post.content }}</p>
+    <p class="date">{{ post.date | safe }}</p>
+    {% endfor %}
 {% endblock %}
