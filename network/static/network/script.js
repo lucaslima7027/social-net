@@ -5,6 +5,6 @@ document.querySelectorAll(".date").forEach(element => {
 });
 
 
-document.querySelector("#test").onclick = () => {
-
-}
+var infinite = new Waypoint.Infinite({
+    element: $('.infinite-container')[0]
+  });

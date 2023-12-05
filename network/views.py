@@ -4,16 +4,22 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from .models import Post
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from .models import User
 
 
 def index(request):
     all_posts = Post.objects.all()
-    paginator = Paginator(all_posts, 1)
-    page_number = request.GET.get("page")
-    page_obj = paginator.get_page(page_number)
+    page = request.GET.get('page', 1)
+    paginator = Paginator(all_posts, 5)
+
+    try:
+        page_obj = paginator.page(page)
+    except PageNotAnInteger:
+        page_obj = paginator.page(1)
+    except EmptyPage:
+        page_obj = paginator.page(paginator.num_pages)
     return render(request, "network/index.html", {
         "page_obj": page_obj 
     })
