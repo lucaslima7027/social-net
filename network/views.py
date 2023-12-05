@@ -12,7 +12,7 @@ from .models import User
 def index(request):
     all_posts = Post.objects.all()
     page = request.GET.get('page', 1)
-    paginator = Paginator(all_posts, 5)
+    paginator = Paginator(all_posts, 3)
 
     try:
         page_obj = paginator.page(page)
