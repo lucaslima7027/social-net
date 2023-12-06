@@ -8,3 +8,4 @@ class PostAdmin(admin.ModelAdmin):
 
 admin.site.register(User)
 admin.site.register(Post, PostAdmin)
+admin.site.register(UserNumber)

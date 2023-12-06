@@ -6,12 +6,12 @@ from django.urls import reverse
 from .models import Post
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
-from .models import User
+from .models import User, UserNumber
 
 
 def index(request):
     # Render all posts views 
-    all_posts = Post.objects.all()
+    all_posts = getPosts(request)
     page = request.GET.get('page', 1)
     paginator = Paginator(all_posts, 3)
 
@@ -68,6 +68,11 @@ def register(request):
         try:
             user = User.objects.create_user(username, email, password)
             user.save()
+
+            # Attempt to create user numbers
+            user_numbers = UserNumber(user=user)
+            user_numbers.save()
+
         except IntegrityError:
             return render(request, "network/register.html", {
                 "message": "Username already taken."
@@ -79,3 +84,32 @@ def register(request):
 
 def returnHtml(request, file_name):
     return render(request, f'network/{file_name}.html')
+
+def following(request):
+    username = request.user.username
+    print("USERNAME = " + username)
+
+    uri = request.get_full_path()
+
+    all_posts = getPosts(request, uri)
+
+    page = request.GET.get('page', 1)
+    paginator = Paginator(all_posts, 3)
+
+    try:
+        page_obj = paginator.page(page)
+    except PageNotAnInteger:
+        page_obj = paginator.page(1)
+    except EmptyPage:
+        page_obj = paginator.page(paginator.num_pages)
+    return render(request, "network/index.html", {
+        "page_obj": page_obj 
+    })
+
+def getPosts(request, page=""):
+    if (page == "/following"):
+        following_ids = UserNumber.objects.values_list('following',flat= True).filter(user__username = request.user.username)
+        all_posts = Post.objects.filter(creator_id__in = set(following_ids)).order_by('-date')
+        return all_posts
+    else:
+        return  Post.objects.exclude(creator__username = request.user.username).order_by('-date')
