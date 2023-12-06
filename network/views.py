@@ -10,6 +10,7 @@ from .models import User
 
 
 def index(request):
+    # Render all posts views 
     all_posts = Post.objects.all()
     page = request.GET.get('page', 1)
     paginator = Paginator(all_posts, 3)

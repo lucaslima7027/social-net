@@ -1,3 +1,4 @@
+// get date of the post and convert to local time
 function fixTime() {
     document.querySelectorAll(".date").forEach(element => {
         const utcDate = element.innerHTML
@@ -6,8 +7,7 @@ function fixTime() {
     });    
 }
 
-
-
+// Waypoint to load more posts
 var infinite = new Waypoint.Infinite({
     element: $('.infinite-container')[0],
     onAfterPageLoad: function () {

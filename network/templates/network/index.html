@@ -1,6 +1,7 @@
 {% extends "network/layout.html" %}
 
 {% block body %}
+
 <!-- Form to new post-->
 {% if user.is_authenticated %}
 <div class="newPost">
@@ -12,10 +13,9 @@
 </form>
 </div>
 {% endif %}
+<!-- End Form to new post-->
 
-
-{% comment %} FIX PAGINATION AND TRY TO MAKE A INFINTE SCROLL {% endcomment %}
-
+<!-- Infinite container -->
 <div class="infinite-container">
     {% for post in page_obj %}
 
@@ -31,4 +31,6 @@
   {% if page_obj.has_next %}
     <a class="infinite-more-link" href="?page={{ page_obj.next_page_number }}">More</a>
   {% endif %}
+
+  <!-- End Infinite container -->
 {% endblock %}
