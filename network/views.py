@@ -13,7 +13,7 @@ def index(request):
     # Create a new post
     if request.method == "POST":
         content, message = createNewPost(request)
-        print(message)
+    
     else:
         content, message = "", ""
             
@@ -101,9 +101,6 @@ def following(request):
     else:
         content, message = "",""
 
-    username = request.user.username
-    print("USERNAME = " + username)
-
     uri = request.get_full_path()
 
     all_posts = getPosts(request, uri)
@@ -126,11 +123,41 @@ def following(request):
         "message": message
         })
 
-def getPosts(request, page=""):
+def profile(request, username):
+    user_numbers = UserNumber.objects.get(user__username=username)
+    
+    user_profile = user_numbers.user
+    following = user_numbers.following.all().count()
+    followers = user_numbers.followers.all().count()
+    
+    
+    all_posts = getPosts(request, "/profile", user_profile.username)
+    page = request.GET.get('page', 1)
+    paginator = Paginator(all_posts, 3)
+
+    try:
+        page_obj = paginator.page(page)
+    except PageNotAnInteger:
+        page_obj = paginator.page(1)
+    except EmptyPage:
+        page_obj = paginator.page(paginator.num_pages)
+    return render(request, "network/index.html", {
+        "page_obj": page_obj,
+        "user_profile": user_profile,
+        "following": following,
+        "followers": followers,
+        "profile": True
+    })
+
+
+
+def getPosts(request, page="", username=""):
     if (page == "/following"):
         following_ids = UserNumber.objects.values_list('following',flat= True).filter(user__username = request.user.username)
         all_posts = Post.objects.filter(creator_id__in = set(following_ids)).order_by('-date')
         return all_posts
+    if (page == "/profile"):
+        return  Post.objects.filter(creator__username = username).order_by('-date')
     else:
         return  Post.objects.exclude(creator__username = request.user.username).order_by('-date')
     
