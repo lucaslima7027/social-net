@@ -10,6 +10,13 @@ from .models import User, UserNumber
 
 
 def index(request):
+    # Create a new post
+    if request.method == "POST":
+        content, message = createNewPost(request)
+        print(message)
+    else:
+        content, message = "", ""
+            
     # Render all posts views 
     all_posts = getPosts(request)
     page = request.GET.get('page', 1)
@@ -22,7 +29,9 @@ def index(request):
     except EmptyPage:
         page_obj = paginator.page(paginator.num_pages)
     return render(request, "network/index.html", {
-        "page_obj": page_obj 
+        "page_obj": page_obj,
+        "message": message,
+        "content": content
     })
 
 
@@ -86,6 +95,14 @@ def returnHtml(request, file_name):
     return render(request, f'network/{file_name}.html')
 
 def following(request):
+    if request.method == "POST":
+        content, message = createNewPost(request)
+
+        render(request, 'network/index.html', {
+            "message": message,
+            "content": content
+        })
+
     username = request.user.username
     print("USERNAME = " + username)
 
@@ -113,3 +130,15 @@ def getPosts(request, page=""):
         return all_posts
     else:
         return  Post.objects.exclude(creator__username = request.user.username).order_by('-date')
+    
+def createNewPost(request):
+    user = request.user
+    content = request.POST["content"]
+
+    if len(content) <= 500:
+        newPost = Post(creator=user, content=content)
+        newPost.save()
+    else:
+        message = "The Post contains more than 500 characters."
+        return content, message
+        

@@ -4,11 +4,17 @@
 
 <!-- Form to new post-->
 {% if user.is_authenticated %}
+
 <div class="newPost">
 <form action="" method="post">
     {% csrf_token %}
     <label for="content">New Post</label>
-    <textarea name="content" id="content" rows="5"></textarea>
+    <textarea name="content" id="content" rows="5">{% if content %}{{ content }}{% endif %}</textarea>
+    
+    {% if message %}
+    <p class="message">{{ message }}</p>
+    {% endif %}
+
     <input id="submitPost" type="submit" value="Post">
 </form>
 </div>
