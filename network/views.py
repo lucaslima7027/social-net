@@ -98,10 +98,8 @@ def following(request):
     if request.method == "POST":
         content, message = createNewPost(request)
 
-        render(request, 'network/index.html', {
-            "message": message,
-            "content": content
-        })
+    else:
+        content, message = "",""
 
     username = request.user.username
     print("USERNAME = " + username)
@@ -115,13 +113,18 @@ def following(request):
 
     try:
         page_obj = paginator.page(page)
+
     except PageNotAnInteger:
         page_obj = paginator.page(1)
+
     except EmptyPage:
         page_obj = paginator.page(paginator.num_pages)
+
     return render(request, "network/index.html", {
-        "page_obj": page_obj 
-    })
+        "page_obj": page_obj,
+        "content": content,
+        "message": message
+        })
 
 def getPosts(request, page=""):
     if (page == "/following"):
@@ -138,6 +141,7 @@ def createNewPost(request):
     if len(content) <= 500:
         newPost = Post(creator=user, content=content)
         newPost.save()
+        return "",""
     else:
         message = "The Post contains more than 500 characters."
         return content, message
