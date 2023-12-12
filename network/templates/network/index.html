@@ -52,7 +52,7 @@
         <a class="user" href="{% url "profile" post.creator %}">{{ post.creator }}</a>
         <p class="contetn">{{ post.content }}</p>
         <p class="date">{{ post.date | safe }}</p>
-        <p>{{post.likes.count }} &#10084;&#65039;</p>
+        <p>{{post.likes.count }} <button id="like" data-id="{{ post.id }}" >&#10084;&#65039;</button></p>
     </div>
     {% endfor %}
   </div>

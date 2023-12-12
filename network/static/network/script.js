@@ -1,3 +1,19 @@
+document.querySelectorAll('#like').forEach(element => {
+    element.addEventListener('click', ()=>{
+        const postId = { id: element.dataset.id}
+        const jsonData = JSON.stringify(postId)
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+        fetch('/api/like', {
+            method: 'PUT',
+            headers: {'X-CSRFToken': csrftoken,
+                      'Content-Type': 'application/json'},
+            mode: 'same-origin',
+            body: jsonData,
+        })
+    })
+})
+
 // get date of the post and convert to local time
 function fixTime() {
     document.querySelectorAll(".date").forEach(element => {

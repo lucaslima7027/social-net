@@ -3,10 +3,10 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
-from .models import Post
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+import json
 
-from .models import User, UserNumber
+from .models import User, UserNumber, Post
 
 
 def index(request):
@@ -155,7 +155,7 @@ def profile(request, username):
         "is_follower": is_follower
     })
 
-# Check if action is follow or unfollow and update DB
+# Checks if action is follow or unfollow and update DB
 def change_followers(request):
     visitor_username = request.POST["visitor"]
     visited_username = request.POST["visited"]
@@ -177,6 +177,15 @@ def change_followers(request):
         visited.save()
 
     return HttpResponseRedirect(reverse("profile", kwargs={"username":visited_username}))
+
+def like(request):
+    
+    if request.method == "PUT":
+        body = json.loads(request.body)
+        post_id = body["id"]
+
+        like_post = Post.objects.get(id = post_id)
+        like_post.likes.add(request.user)
 
 
 def getPosts(request, page="", username=""):
