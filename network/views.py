@@ -124,14 +124,19 @@ def following(request):
         })
 
 def profile(request, username):
+    actual_user = request.user
     user_numbers = UserNumber.objects.get(user__username=username)
+
+    followers = user_numbers.followers.all() 
+    following_count = user_numbers.following.all().count()
+    followers_count = user_numbers.followers.all().count()
     
-    user_profile = user_numbers.user
-    following = user_numbers.following.all().count()
-    followers = user_numbers.followers.all().count()
-    
-    
-    all_posts = getPosts(request, "/profile", user_profile.username)
+    if actual_user in followers:
+        is_follower = True
+    else:
+        is_follower = False
+
+    all_posts = getPosts(request, "/profile", user_numbers.user.username)
     page = request.GET.get('page', 1)
     paginator = Paginator(all_posts, 3)
 
@@ -143,10 +148,11 @@ def profile(request, username):
         page_obj = paginator.page(paginator.num_pages)
     return render(request, "network/index.html", {
         "page_obj": page_obj,
-        "user_profile": user_profile,
-        "following": following,
-        "followers": followers,
-        "profile": True
+        "user_numbers": user_numbers,
+        "following_count": following_count,
+        "followers_count": followers_count,
+        "profile": True,
+        "is_follower": is_follower
     })
 
 

@@ -3,9 +3,17 @@
 {% block body %}
 
 {% if profile %}
-<h1>{{ user_profile.username }}</h1>
-<h2>Following {{following}}</h2>
-<h2>Followers {{followers}}</h2>
+<h1>{{ user_numbers.user.username }}</h1>
+<h2>Following {{following_count}}</h2>
+<h2>Followers {{followers_count}}</h2>
+
+{% if user_numbers.user != user %}
+{% if is_follower %}
+<button>Unfollow</button>
+{% else %}
+<button>Follow</button>
+{% endif %}
+{% endif %}
 
 {% endif %}
 
@@ -33,7 +41,7 @@
     {% for post in page_obj %}
 
       <div class="infinite-item postTile">
-        <a class="user" href="{{ post.creator }}">{{ post.creator }}</a>
+        <a class="user" href="{% url "profile" post.creator %}">{{ post.creator }}</a>
         <p class="contetn">{{ post.content }}</p>
         <p class="date">{{ post.date | safe }}</p>
         <p>{{post.likes.count }} &#10084;&#65039;</p>
