@@ -155,6 +155,28 @@ def profile(request, username):
         "is_follower": is_follower
     })
 
+# Check if action is follow or unfollow and update DB
+def change_followers(request):
+    visitor_username = request.POST["visitor"]
+    visited_username = request.POST["visited"]
+    action = request.POST["action"]
+    visitor = UserNumber.objects.get(user__username = visitor_username)
+    visited = UserNumber.objects.get(user__username = visited_username)
+    
+    if action == "unfollow":
+        visitor.following.remove(visited.user)
+        visitor.save()
+        
+        visited.followers.remove(visitor.user)
+        visited.save()
+    else:
+        visitor.following.add(visited.user)
+        visitor.save()
+        
+        visited.followers.add(visitor.user)
+        visited.save()
+
+    return HttpResponseRedirect(reverse("profile", kwargs={"username":visited_username}))
 
 
 def getPosts(request, page="", username=""):

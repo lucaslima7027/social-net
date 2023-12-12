@@ -8,11 +8,19 @@
 <h2>Followers {{followers_count}}</h2>
 
 {% if user_numbers.user != user %}
+<form action=" {% url "change_followers" %} " method="post">
+  {% csrf_token %}
+  <input type="text" name="visitor" value="{{user}}">
+  <input type="text" name="visited" value="{{ user_numbers.user}}">
 {% if is_follower %}
-<button>Unfollow</button>
+<input type="hidden" name="action" value="unfollow">
+<input type="submit" value="Unfollow">
 {% else %}
-<button>Follow</button>
+<input type="hidden" name="action" value="follow">
+<input type="submit" value="Follow">
 {% endif %}
+
+</form>
 {% endif %}
 
 {% endif %}
