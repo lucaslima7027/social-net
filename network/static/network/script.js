@@ -11,6 +11,17 @@ document.querySelectorAll('#like').forEach(element => {
             mode: 'same-origin',
             body: jsonData,
         })
+        .then(response => {
+                    fetch(`/api/likes/${postId.id}`, {
+                        method: 'GET',
+                    })
+                    .then(response => response.json())
+                    .then(response => {
+                        const postLikes = JSON.stringify(response)
+                        selector = String(`#post${postId.id}`)
+                        document.querySelector(selector).innerHTML = postLikes
+                    })
+        })
     })
 })
 

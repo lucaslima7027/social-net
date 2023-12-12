@@ -186,6 +186,15 @@ def like(request):
 
         like_post = Post.objects.get(id = post_id)
         like_post.likes.add(request.user)
+        like_post.save()
+        return HttpResponse(200)
+
+def like_number(request, post_id):
+    post = Post.objects.get(id = post_id)
+    post_likes = post.likes.count()
+    
+    return HttpResponse(json.dumps(post_likes), content_type='application/json')
+
 
 
 def getPosts(request, page="", username=""):
