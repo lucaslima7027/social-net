@@ -185,9 +185,20 @@ def like(request):
         post_id = body["id"]
 
         like_post = Post.objects.get(id = post_id)
-        like_post.likes.add(request.user)
+        
+        likes_ids = Post.objects.values_list('likes',flat= True).filter(id = post_id)
+
+        user_liked = Post.objects.filter(creator_id__in = set(likes_ids))
+
+        if user_liked:
+            like_post.likes.remove(request.user)
+            
+        else:
+            like_post.likes.add(request.user)
+        
         like_post.save()
         return HttpResponse(200)
+            
 
 def like_number(request, post_id):
     post = Post.objects.get(id = post_id)
