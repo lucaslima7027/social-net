@@ -50,10 +50,14 @@
 
       <div class="infinite-item postTile">
         <a class="user" href="{% url "profile" post.creator %}">{{ post.creator }}</a>
-        <p class="contetn">{{ post.content }}</p>
-        <p class="date">{{ post.date | safe }}</p>
+        <p id="content{{ post.id }}" class="content">{{ post.content }}</p>
+        <p id="date{{ post.id }}" class="date">{{ post.date | safe }}</p>
         <p id="post{{ post.id }}" class="likes">{{post.likes.count }}</p>
         <button id="like" data-id="{{ post.id }}" >&#10084;&#65039;</button>
+      
+        {% if post.creator|slugify == user.username|slugify %}
+        <button id="edit" data-id="{{ post.id }}">Edit</button>
+        {% endif %}
     </div>
     {% endfor %}
   </div>

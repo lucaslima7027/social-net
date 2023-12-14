@@ -1,0 +1,7 @@
+<form action=" {% url "edit_post" %} " method="post">
+    <input type="hidden" value="${postId}">
+    <textarea rows="5">${post}</textarea>
+    <input type="submit" value="Submit">
+</form>
+<button id="editPost">Submit</button>
+<input type="hidden" value={{user.username}}>

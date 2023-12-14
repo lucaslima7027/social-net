@@ -9,7 +9,7 @@ class Post(models.Model):
     creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name="createdBy")
     likes = models.ManyToManyField(User, blank=True, related_name="likedBy")
     content = models.CharField(max_length=500)
-    date = models.DateTimeField(auto_now_add=True)
+    date = models.DateTimeField(auto_now=True)
 
 class UserNumber(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user")

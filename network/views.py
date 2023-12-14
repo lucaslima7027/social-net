@@ -207,6 +207,29 @@ def like_number(request, post_id):
     return HttpResponse(json.dumps(post_likes), content_type='application/json')
 
 
+def edit_post(request):
+    data = json.loads(request.body)
+    post_id = data["id"]
+    new_content = data["content"]
+    
+    post = Post.objects.get(id=post_id)
+    creator = post.creator.username
+
+    if request.user.username == creator:
+        post.content = new_content
+        post.save()
+    return HttpResponse(200)
+
+def update_post(request, post_id):
+    post = Post.objects.get(id = post_id)
+    new_post = {
+        "post_content": post.content,
+        "post_date": post.date
+    }
+    print(new_post)
+
+    return HttpResponse(json.dumps(new_post, indent=4, sort_keys=True, default=str), content_type='application/json')
+
 
 def getPosts(request, page="", username=""):
     if (page == "/following"):
